@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red Bull — Brand Universe Europa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D40000;--red2:#FF2020;--red-dim:rgba(212,0,0,0.12);
+  --silver:#B8B8B8;--bg:#080808;--bg2:#111;--bg3:#1A1A1A;
+  --text:#E4E4E4;--muted:#666;--border:rgba(255,255,255,0.07);
+  --panel-w:440px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;display:flex;flex-direction:column}
+
+/* HEADER */
+header{
+  display:flex;align-items:center;gap:24px;
+  padding:0 28px;height:54px;flex-shrink:0;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(90deg,rgba(212,0,0,0.04) 0%,transparent 40%);
+}
+.hd-brand{display:flex;align-items:baseline;gap:10px}
+.hd-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;letter-spacing:.1em;color:var(--red);text-transform:uppercase}
+.hd-sep{color:var(--muted);font-size:14px}
+.hd-sub{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+.hd-right{margin-left:auto;display:flex;align-items:center;gap:20px}
+.legend{display:flex;gap:14px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.leg-dot{width:7px;height:7px;border-radius:50%}
+.dim-count{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.06em;border:1px solid var(--border);padding:3px 10px;border-radius:20px}
+
+/* MAIN LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;position:relative}
+
+/* MAP AREA */
+.map-area{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.map-area::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(212,0,0,0.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* SVG styles */
+#umap{max-width:100%;max-height:100%;cursor:default}
+.dim-node{cursor:pointer}
+.dim-node .nc{transition:all .22s ease}
+.dim-node:hover .nc{filter:drop-shadow(0 0 8px currentColor)}
+.dim-node.active .nc{filter:drop-shadow(0 0 12px currentColor)}
+.conn-line{transition:all .22s ease}
+
+/* DETAIL PANEL */
+.panel{
+  width:var(--panel-w);flex-shrink:0;
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  background:var(--bg2);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+.panel-header{
+  padding:20px 24px 16px;flex-shrink:0;
+  border-bottom:1px solid var(--border);
+}
+.ph-dim{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.ph-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:32px;letter-spacing:.04em;line-height:1;text-transform:uppercase}
+.ph-question{font-size:13px;color:var(--muted);font-style:italic;margin-top:6px}
+.ph-status{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:11px;padding:3px 10px;border-radius:12px}
+.panel-body{flex:1;overflow-y:auto;padding:20px 24px}
+.panel-body::-webkit-scrollbar{width:4px}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* CONTENT STYLES */
+.section{margin-bottom:24px}
+.section-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.dim-table{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.55}
+.dim-table td{padding:7px 10px;border:1px solid rgba(255,255,255,0.06);vertical-align:top}
+.dim-table tr:first-child td{background:rgba(255,255,255,0.04);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.dim-table .cell-key{width:38%;color:var(--silver);font-weight:500}
+.dim-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.dim-list li{font-size:13px;line-height:1.55;padding-left:14px;position:relative;color:var(--text)}
+.dim-list li::before{content:'–';position:absolute;left:0;color:var(--red)}
+.dim-list li b{color:var(--silver)}
+.dim-text{font-size:13px;line-height:1.65;color:#ccc;margin-bottom:10px}
+.rule-row{display:flex;gap:8px;margin-bottom:6px;font-size:12.5px;line-height:1.5}
+.rule-tag{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:2px 7px;border-radius:3px;letter-spacing:.05em;margin-top:1px}
+.tag-si{background:rgba(34,197,94,.15);color:#4ade80}
+.tag-no{background:rgba(212,0,0,.15);color:#f87171}
+.tag-cuidado{background:rgba(234,179,8,.12);color:#fbbf24}
+.ley{margin-bottom:12px;padding-left:12px;border-left:2px solid var(--red)}
+.ley b{color:var(--red);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.04em;display:block;margin-bottom:2px}
+.ley span{font-size:12.5px;color:#bbb;line-height:1.6}
+.timeline-item{display:grid;grid-template-columns:52px 1fr;gap:10px;margin-bottom:8px;align-items:start}
+.tl-year{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--red)}
+.tl-text{font-size:12.5px;color:#bbb;line-height:1.55;padding-top:2px}
+.sacred{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
+.sacred-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.sacred-text{font-size:12.5px;color:#bbb;line-height:1.55}
+.sacred-text b{color:var(--silver);display:block;font-size:13px;margin-bottom:1px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:500;margin:2px}
+.field-grid{display:flex;flex-direction:column;gap:0}
+.field-item{display:grid;grid-template-columns:140px 1fr;border-bottom:1px solid var(--border);padding:8px 0}
+.field-item:first-child{border-top:1px solid var(--border)}
+.field-k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-right:12px;padding-top:1px}
+.field-v{font-size:13px;color:var(--text);line-height:1.55}
+
+/* HINT */
+.hint{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;
+  pointer-events:none;transition:opacity .3s;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-brand">
+    <span class="hd-logo">Red Bull</span>
+    <span class="hd-sep">/</span>
+    <span class="hd-sub">Brand Universe — Europa</span>
+  </div>
+  <div class="hd-right">
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#22C55E"></div>Definido (7)</div>
+      <div class="leg"><div class="leg-dot" style="background:#EAB308"></div>Parcial (1)</div>
+    </div>
+    <div class="dim-count">8 Dimensiones</div>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="map-area">
+    <svg id="umap" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#1A0000" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#080808" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="glow-red"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+
+      <!-- Background glow -->
+      <circle cx="350" cy="350" r="280" fill="url(#bgGrad)"/>
+
+      <!-- Orbit rings -->
+      <circle cx="350" cy="350" r="100" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+      <circle cx="350" cy="350" r="170" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+      <circle cx="350" cy="350" r="245" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>
+      <circle cx="350" cy="350" r="300" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2 8"/>
+
+      <!-- Radial grid lines -->
+      <line x1="350" y1="350" x2="350" y2="40" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="350" y1="350" x2="523" y2="177" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="350" y1="350" x2="600" y2="350" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="350" y1="350" x2="523" y2="523" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="350" y1="350" x2="350" y2="660" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="350" y1="350" x2="177" y2="523" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="350" y1="350" x2="100" y2="350" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="350" y1="350" x2="177" y2="177" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+
+      <!-- Connection lines -->
+      <line id="conn-narrativas"       class="conn-line" x1="350" y1="350" x2="350" y2="105" stroke="rgba(232,93,36,0.15)"  stroke-width="0.8"/>
+      <line id="conn-comunidades"      class="conn-line" x1="350" y1="350" x2="523" y2="177" stroke="rgba(242,166,35,0.15)" stroke-width="0.8"/>
+      <line id="conn-sensaciones"      class="conn-line" x1="350" y1="350" x2="595" y2="350" stroke="rgba(226,75,74,0.15)"  stroke-width="0.8"/>
+      <line id="conn-reglas"           class="conn-line" x1="350" y1="350" x2="523" y2="523" stroke="rgba(168,85,247,0.15)" stroke-width="0.8"/>
+      <line id="conn-mitologia"        class="conn-line" x1="350" y1="350" x2="350" y2="595" stroke="rgba(55,138,221,0.15)" stroke-width="0.8"/>
+      <line id="conn-escenarios"       class="conn-line" x1="350" y1="350" x2="177" y2="523" stroke="rgba(29,158,117,0.15)" stroke-width="0.8"/>
+      <line id="conn-expansion"        class="conn-line" x1="350" y1="350" x2="105" y2="350" stroke="rgba(34,211,238,0.15)" stroke-width="0.8"/>
+      <line id="conn-comunidad_design" class="conn-line" x1="350" y1="350" x2="177" y2="177" stroke="rgba(148,163,184,0.12)" stroke-width="0.8"/>
+
+      <!-- NARRATIVAS node (350,105) -->
+      <g class="dim-node" id="nd-narrativas" data-id="narrativas" onclick="selectDim('narrativas')">
+        <circle class="nc" cx="350" cy="105" r="62" fill="rgba(232,93,36,0.07)" stroke="#E85D24" stroke-width="1.2" style="color:#E85D24"/>
+        <circle cx="350" cy="105" r="50" fill="none" stroke="rgba(232,93,36,0.12)" stroke-width="0.5"/>
+        <text x="350" y="101" text-anchor="middle" dominant-baseline="central" fill="#E85D24" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="13" letter-spacing="1">NARRATIVAS</text>
+        <text x="350" y="116" text-anchor="middle" dominant-baseline="central" fill="rgba(232,93,36,0.55)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Qué se cuenta?</text>
+        <circle cx="382" cy="73" r="5" fill="#22C55E" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- COMUNIDADES node (523,177) -->
+      <g class="dim-node" id="nd-comunidades" data-id="comunidades" onclick="selectDim('comunidades')">
+        <circle class="nc" cx="523" cy="177" r="62" fill="rgba(242,166,35,0.07)" stroke="#F2A623" stroke-width="1.2" style="color:#F2A623"/>
+        <circle cx="523" cy="177" r="50" fill="none" stroke="rgba(242,166,35,0.12)" stroke-width="0.5"/>
+        <text x="523" y="173" text-anchor="middle" dominant-baseline="central" fill="#F2A623" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="12" letter-spacing="1">COMUNIDADES</text>
+        <text x="523" y="188" text-anchor="middle" dominant-baseline="central" fill="rgba(242,166,35,0.55)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Quiénes habitan?</text>
+        <circle cx="555" cy="145" r="5" fill="#22C55E" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- SENSACIONES node (595,350) -->
+      <g class="dim-node" id="nd-sensaciones" data-id="sensaciones" onclick="selectDim('sensaciones')">
+        <circle class="nc" cx="595" cy="350" r="62" fill="rgba(226,75,74,0.07)" stroke="#E24B4A" stroke-width="1.2" style="color:#E24B4A"/>
+        <circle cx="595" cy="350" r="50" fill="none" stroke="rgba(226,75,74,0.12)" stroke-width="0.5"/>
+        <text x="595" y="346" text-anchor="middle" dominant-baseline="central" fill="#E24B4A" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="12" letter-spacing="1">SENSACIONES</text>
+        <text x="595" y="361" text-anchor="middle" dominant-baseline="central" fill="rgba(226,75,74,0.55)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Cómo se siente?</text>
+        <circle cx="627" cy="318" r="5" fill="#22C55E" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- REGLAS node (523,523) -->
+      <g class="dim-node" id="nd-reglas" data-id="reglas" onclick="selectDim('reglas')">
+        <circle class="nc" cx="523" cy="523" r="62" fill="rgba(168,85,247,0.07)" stroke="#A855F7" stroke-width="1.2" style="color:#A855F7"/>
+        <circle cx="523" cy="523" r="50" fill="none" stroke="rgba(168,85,247,0.12)" stroke-width="0.5"/>
+        <text x="523" y="519" text-anchor="middle" dominant-baseline="central" fill="#A855F7" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="14" letter-spacing="1">REGLAS</text>
+        <text x="523" y="534" text-anchor="middle" dominant-baseline="central" fill="rgba(168,85,247,0.55)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Qué es posible?</text>
+        <circle cx="555" cy="491" r="5" fill="#22C55E" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- MITOLOGÍA node (350,595) -->
+      <g class="dim-node" id="nd-mitologia" data-id="mitologia" onclick="selectDim('mitologia')">
+        <circle class="nc" cx="350" cy="595" r="62" fill="rgba(55,138,221,0.07)" stroke="#378ADD" stroke-width="1.2" style="color:#378ADD"/>
+        <circle cx="350" cy="595" r="50" fill="none" stroke="rgba(55,138,221,0.12)" stroke-width="0.5"/>
+        <text x="350" y="591" text-anchor="middle" dominant-baseline="central" fill="#378ADD" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="13" letter-spacing="1">MITOLOGÍA</text>
+        <text x="350" y="606" text-anchor="middle" dominant-baseline="central" fill="rgba(55,138,221,0.55)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Cuál es el origen?</text>
+        <circle cx="382" cy="563" r="5" fill="#22C55E" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- ESCENARIOS node (177,523) -->
+      <g class="dim-node" id="nd-escenarios" data-id="escenarios" onclick="selectDim('escenarios')">
+        <circle class="nc" cx="177" cy="523" r="62" fill="rgba(29,158,117,0.07)" stroke="#1D9E75" stroke-width="1.2" style="color:#1D9E75"/>
+        <circle cx="177" cy="523" r="50" fill="none" stroke="rgba(29,158,117,0.12)" stroke-width="0.5"/>
+        <text x="177" y="519" text-anchor="middle" dominant-baseline="central" fill="#1D9E75" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="13" letter-spacing="1">ESCENARIOS</text>
+        <text x="177" y="534" text-anchor="middle" dominant-baseline="central" fill="rgba(29,158,117,0.55)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Cuál es el mapa?</text>
+        <circle cx="209" cy="491" r="5" fill="#22C55E" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- EXPANSIÓN node (105,350) -->
+      <g class="dim-node" id="nd-expansion" data-id="expansion" onclick="selectDim('expansion')">
+        <circle class="nc" cx="105" cy="350" r="62" fill="rgba(34,211,238,0.07)" stroke="#22D3EE" stroke-width="1.2" style="color:#22D3EE"/>
+        <circle cx="105" cy="350" r="50" fill="none" stroke="rgba(34,211,238,0.12)" stroke-width="0.5"/>
+        <text x="105" y="346" text-anchor="middle" dominant-baseline="central" fill="#22D3EE" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="13" letter-spacing="1">EXPANSIÓN</text>
+        <text x="105" y="361" text-anchor="middle" dominant-baseline="central" fill="rgba(34,211,238,0.55)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Hacia dónde crece?</text>
+        <circle cx="137" cy="318" r="5" fill="#22C55E" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- DISEÑO COMUNIDAD node (177,177) -->
+      <g class="dim-node" id="nd-comunidad_design" data-id="comunidad_design" onclick="selectDim('comunidad_design')">
+        <circle class="nc" cx="177" cy="177" r="62" fill="rgba(148,163,184,0.05)" stroke="#94A3B8" stroke-width="1.2" style="color:#94A3B8"/>
+        <circle cx="177" cy="177" r="50" fill="none" stroke="rgba(148,163,184,0.1)" stroke-width="0.5"/>
+        <text x="177" y="168" text-anchor="middle" dominant-baseline="central" fill="#94A3B8" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="12" letter-spacing="1">DISEÑO DE</text>
+        <text x="177" y="182" text-anchor="middle" dominant-baseline="central" fill="#94A3B8" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="12" letter-spacing="1">COMUNIDAD</text>
+        <text x="177" y="196" text-anchor="middle" dominant-baseline="central" fill="rgba(148,163,184,0.5)" font-family="'Barlow',sans-serif" font-size="9.5" font-style="italic">¿Cómo se interactúa?</text>
+        <circle cx="209" cy="145" r="5" fill="#EAB308" stroke="#080808" stroke-width="1.5"/>
+      </g>
+
+      <!-- CENTER node -->
+      <g id="nd-platform" onclick="selectDim('brand_platform')" style="cursor:pointer">
+        <circle cx="350" cy="350" r="78" fill="rgba(212,0,0,0.06)" stroke="#D40000" stroke-width="1.5" filter="url(#glow-red)"/>
+        <circle cx="350" cy="350" r="64" fill="rgba(212,0,0,0.04)" stroke="rgba(212,0,0,0.3)" stroke-width="0.5"/>
+        <text x="350" y="340" text-anchor="middle" dominant-baseline="central" fill="#D40000" font-family="'Barlow Condensed',sans-serif" font-weight="900" font-size="18" letter-spacing="2">RED BULL</text>
+        <text x="350" y="358" text-anchor="middle" dominant-baseline="central" fill="rgba(212,0,0,0.7)" font-family="'Barlow Condensed',sans-serif" font-weight="600" font-size="11" letter-spacing="1.5">BRAND PLATFORM</text>
+        <text x="350" y="372" text-anchor="middle" dominant-baseline="central" fill="rgba(184,184,184,0.4)" font-family="'Barlow',sans-serif" font-size="9" letter-spacing="0.5">Est. 1987, Austria</text>
+      </g>
+    </svg>
+    <div class="hint" id="hint">Seleccioná una dimensión para explorar</div>
+  </div>
+
+  <!-- DETAIL PANEL -->
+  <div class="panel" id="panel">
+    <div class="panel-header" id="panel-header">
+      <div class="ph-dim" id="ph-dim" style="color:#D40000">Núcleo del universo</div>
+      <div class="ph-title" id="ph-title" style="color:#D40000">Brand Platform</div>
+      <div class="ph-question" id="ph-question">¿Quién es Red Bull?</div>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+</div>
+
+<script>
+const DIMS = {
+brand_platform:{
+  label:'Brand Platform',sublabel:'Núcleo del universo',question:'¿Quién es Red Bull?',color:'#D40000',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">Identidad core</div>
+      <div class="field-grid">
+        <div class="field-item"><span class="field-k">Esencia</span><span class="field-v">La fuerza que libera el potencial humano de quienes se niegan a aceptar lo ordinario.</span></div>
+        <div class="field-item"><span class="field-k">Propósito</span><span class="field-v">Hacer posible lo que el mundo dice que es imposible — y documentarlo para que otros crean que ellos también pueden.</span></div>
+        <div class="field-item"><span class="field-k">Arquetipo</span><span class="field-v">Héroe + Explorador. No el héroe que salva al mundo: el que se enfrenta a sus propios límites y gana.</span></div>
+        <div class="field-item"><span class="field-k">Beneficio funcional</span><span class="field-v">Energía para rendir al máximo cuando más importa.</span></div>
+        <div class="field-item"><span class="field-k">Beneficio emocional</span><span class="field-v">La certeza de que los límites no son reales — son puntos de partida.</span></div>
+        <div class="field-item"><span class="field-k">Personalidad</span><span class="field-v">Audaz, auténtico, irreverente con clase. En Europa: sofisticado más que masivo. Adrenalina refinada.</span></div>
+        <div class="field-item"><span class="field-k">Posicionamiento</span><span class="field-v">No es una bebida. Es un sistema de habilitación del rendimiento humano extraordinario.</span></div>
+        <div class="field-item"><span class="field-k">Tagline</span><span class="field-v">"Red Bull te da alas." — No es un slogan. Es la ley física del universo.</span></div>
+        <div class="field-item"><span class="field-k">Tono fundamental</span><span class="field-v">Directo. Sin florituras. Desafiante sin ser agresivo. Nunca corporativo.</span></div>
+        <div class="field-item"><span class="field-k">Conflicto central</span><span class="field-v">El ser humano vs. sus propios límites — y la complacencia cultural que los refuerza.</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">El principio rector de Europa</div>
+      <p class="dim-text">Red Bull no es una marca de bebidas energéticas que hace contenido de deportes extremos. Es una <strong style="color:#e4e4e4">empresa de medios y entretenimiento cultural</strong> que vende una bebida como objeto sagrado de su universo.</p>
+      <p class="dim-text">En Europa, Austria no es solo un mercado — es el <strong style="color:#e4e4e4">planeta de origen</strong>. El universo nació acá en 1987 y sus activos más sagrados están en suelo europeo: el Red Bull Ring, el Hangar-7, la historia de Baumgartner.</p>
+    </div>
+  `
+},
+narrativas:{
+  label:'Narrativas',sublabel:'Dimensión 1',question:'¿Qué se cuenta en el universo Red Bull Europa?',color:'#E85D24',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">Los 8 usos narrativos</div>
+      <table class="dim-table"><tr><td>Uso</td><td>Rol · Prioridad</td></tr>
+        <tr><td class="cell-key">Entretenimiento <span style="color:#E85D24">★★★</span></td><td>Dominante (65%). Hero stories de atletas europeos, F1, documentales de hazañas. El mundo se cuenta como épica.</td></tr>
+        <tr><td class="cell-key">Inspiración <span style="color:#E85D24">★★★</span></td><td>Segundo dominante (20%). Atletas superando límites reconocibles. No motivación barata — verdad dura y hermosa.</td></tr>
+        <tr><td class="cell-key">Educación ★★</td><td>Selectivo (10%). Making-of de ingeniería RB Racing, biomecánica del rendimiento, técnica de atletas.</td></tr>
+        <tr><td class="cell-key">Participación ★★</td><td>Eventos propios. Invitación activa a habitar el universo. Ritual de comunidad, no interacción de marca.</td></tr>
+        <tr><td class="cell-key">Conversación ★</td><td>Alta barra de entrada. Solo cuando el universo tiene algo genuinamente propio que decir. Nunca por FOMO.</td></tr>
+        <tr><td class="cell-key">Utilidad ★</td><td>Solo si encaja con el universo: nutrición de atleta, entrenamiento de élite, recuperación. Nunca wellness genérico.</td></tr>
+        <tr><td class="cell-key">Experiencia ★</td><td>Live events, Red Bull TV, Hangar-7. La experiencia como touchpoint máximo del universo.</td></tr>
+        <tr><td class="cell-key">Conversión ★</td><td>Mínimo (5%). Siempre subordinado. La bebida es consecuencia, no protagonista. Nunca pushy.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Subgéneros core — siempre disponibles</div>
+      <ul class="dim-list">
+        <li><b>Hero story épica:</b> El atleta vs. el límite. La hazaña filmada como cine. Baumgartner desde el espacio es el benchmark. Verstappen en Mónaco, también.</li>
+        <li><b>Craftsmanship / making-of:</b> El proceso detrás de lo imposible. Ingeniería de F1, preparación de un atleta de Cliff Diving. El detalle como forma de respeto.</li>
+        <li><b>Competitive epic:</b> La carrera, el vuelo, el salto. El momento de verdad filmado con toda la producción disponible. F1 es el territorio más fuerte en Europa.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">Subgéneros satélite</div>
+      <ul class="dim-list">
+        <li><b>Music culture:</b> Escena techno/electronic europea (Berlin, UK, Ibiza) cuando conecta auténticamente. Nunca sponsorship genérico.</li>
+        <li><b>Urban sports:</b> Parkour, skate, BMX en contexto europeo urbano. Ciudades como plataformas de hazañas.</li>
+        <li><b>Reactive / hot take:</b> Solo cuando el universo tiene algo genuinamente propio que decir. Alta barra.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">Mix por funnel</div>
+      <table class="dim-table"><tr><td>Nivel</td><td>Mix · Subgéneros · Plataformas</td></tr>
+        <tr><td class="cell-key">TOFU 65%</td><td>Hero story, Competitive epic, Music culture. TikTok, YouTube Shorts, Reels, events live.</td></tr>
+        <tr><td class="cell-key">MOFU 30%</td><td>Craftsmanship, Urban sports en profundidad, Education de rendimiento. YouTube long-form, Red Bull TV.</td></tr>
+        <tr><td class="cell-key">BOFU 5%</td><td>Soft sell en contexto de rendimiento. La bebida como parte del ritual del atleta. Retail, eventco.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Incompatibilidades absolutas</div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Hero story épica + humor absurdo. La épica requiere seriedad.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Aspiracional de lujo + masivo/popular. El universo no es elitista ni populista.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Commercial EDM + universo de rendimiento. La música del universo es underground.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Conversión hard sell + cualquier subgénero. El BOFU siempre es suave y contextualizado.</span></div>
+    </div>
+  `
+},
+comunidades:{
+  label:'Comunidades',sublabel:'Dimensión 2',question:'¿Quiénes habitan el universo Red Bull Europa?',color:'#F2A623',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">Los 5 arquetipos del universo</div>
+      <table class="dim-table"><tr><td>Arquetipo</td><td>Perfil europeo · Rol narrativo</td></tr>
+        <tr><td class="cell-key">El Protagonista</td><td>Atletas de élite: Verstappen (F1), Pogačar (ciclismo), Carrasco (moto), atletas de Cliff Diving y ski alpino. Rol: el héroe que demuestra que los límites son franqueables.</td></tr>
+        <tr><td class="cell-key">El Mentor</td><td>Ingenieros de RB Racing, coaches de alto rendimiento, Christian Horner. Rol: revela el detrás de escena, hace posible lo imposible mediante el conocimiento.</td></tr>
+        <tr><td class="cell-key">El Explorador</td><td>Estudiantes universitarios 18-28 en UK, DE, ES, FR, IT, NL. Jóvenes profesionales urbanos. Rol: el espejo aspiracional del protagonista.</td></tr>
+        <tr><td class="cell-key">El Embajador Cultural</td><td>DJs de techno berlinés y drum&bass UK, creadores de contenido de outdoor/adventure. Rol: expande los escenarios sin diluir la esencia.</td></tr>
+        <tr><td class="cell-key">El Guardián</td><td>Student Marketeers, fans de F1 de alto compromiso, peregrinos del Hangar-7. Rol: custodio del universo, transmite las reglas a nuevos habitantes.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Reglas de casting</div>
+      <div class="rule-row"><span class="rule-tag tag-si">SÍ</span><span>Atleta con hazaña real, documentada y verificable en su disciplina.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Actores haciendo deporte, influencers sin vínculo real con rendimiento extremo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Embajador cultural sin credibilidad auténtica en su tribu. El crossover oportunista rompe el universo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Protagonista que aparece en universos de marcas competidoras.</span></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Student Marketeers Program — Europa</div>
+      <table class="dim-table"><tr><td>Elemento</td><td>Descripción</td></tr>
+        <tr><td class="cell-key">Presencia</td><td>+50 universidades europeas activas: UK, DE, ES, FR, IT, NL, AT, PL.</td></tr>
+        <tr><td class="cell-key">Rol</td><td>Estudiante que representa la marca en su campus: organiza activaciones, distribuye producto, reporta insights culturales del mercado local.</td></tr>
+        <tr><td class="cell-key">Lo que recibe</td><td>Experiencia de marca, acceso a eventos, conexión con el ecosistema Red Bull, posibilidad de crecimiento.</td></tr>
+        <tr><td class="cell-key">Rol narrativo</td><td>Primer escalón de la jerarquía del universo. El Guardián en formación.</td></tr>
+        <tr><td class="cell-key">Regla clave</td><td>No es trabajo de marketing corporativo — es un rol cultural. Los Marketeers encarnan el universo, no ejecutan tácticas.</td></tr>
+      </table>
+    </div>
+  `
+},
+sensaciones:{
+  label:'Sensaciones',sublabel:'Dimensión 3 · Code Book',question:'¿Cómo se ve y se siente el universo Red Bull Europa?',color:'#E24B4A',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">Identidad visual</div>
+      <table class="dim-table"><tr><td>Elemento</td><td>Especificación Europa</td></tr>
+        <tr><td class="cell-key">Color primario</td><td>Rojo Red Bull: <strong>#D40000</strong> (PMS 185 C). Nunca variaciones, pasteles ni derivados.</td></tr>
+        <tr><td class="cell-key">Color secundario</td><td>Plateado metálico (siempre con efecto metálico, nunca gris plano). Negro absoluto: #000000.</td></tr>
+        <tr><td class="cell-key">Color contraste</td><td>Blanco puro: #FFFFFF como espacio negativo. Nunca crema, beige o blanco roto.</td></tr>
+        <tr><td class="cell-key">Fotografía</td><td>Gran angular en hazañas. Alta velocidad de obturación en acción. Luz natural en exteriores alpinos. Alta saturación controlada. Sin filtros artificiosos.</td></tr>
+        <tr><td class="cell-key">Dirección de arte</td><td>Ángulos imposibles — el punto de vista que ninguna cámara convencional tomaría. El objetivo es transmitir la escala del logro, no la comodidad del espectador.</td></tr>
+        <tr><td class="cell-key">Video</td><td>Cuts rápidos en tensión máxima. Slow motion en el instante cumbre. Nunca transiciones corporativas, dissolves blandos ni animaciones genéricas.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Temperatura emocional europea</div>
+      <p class="dim-text">El universo Red Bull global tiene adrenalina masiva. El europeo tiene <strong style="color:#e4e4e4">adrenalina refinada</strong>. El consumidor europeo procesa la intensidad con mayor distancia crítica — la intensidad no baja, se vuelve más sofisticada.</p>
+      <table class="dim-table"><tr><td>Estado emocional</td><td>En Europa</td></tr>
+        <tr><td class="cell-key">Adrenalina</td><td>Controlada y articulada. La cámara encuadra la hazaña con la distancia de quien sabe que es histórica.</td></tr>
+        <tr><td class="cell-key">Audacia</td><td>Verificada y probada. Los números, los récords y los datos son parte del tono. No bravuconería.</td></tr>
+        <tr><td class="cell-key">Desafío</td><td>Intelectual además de físico. En UK/DE, el reto mental importa tanto como el físico.</td></tr>
+        <tr><td class="cell-key">Conexión</td><td>Cercana pero no sentimental. El universo no llora. Emociona con contención.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Sonido y materialidad</div>
+      <ul class="dim-list">
+        <li><b>Sonido del universo:</b> Techno, drum&bass y electronic underground — Berlin, Manchester, Bristol. No EDM commercial. El rugido del V6 híbrido de RB Racing es el sonido más icónico del universo europeo.</li>
+        <li><b>Materialidad:</b> Metal frío, carbono, nieve alpina compacta, piedra de montaña, combustible de pista.</li>
+        <li><b>La lata fría:</b> El tacto metálico de 250ml a temperatura perfecta — el objeto sensorial más democrático del universo.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">Tono verbal por mercado</div>
+      <table class="dim-table"><tr><td>Mercado</td><td>Tono</td></tr>
+        <tr><td class="cell-key">UK</td><td>Wit seco, understatement. Directo sin sentimentalismo. Never try-hard.</td></tr>
+        <tr><td class="cell-key">DE / AT</td><td>Preciso, técnico, con respeto por la ingeniería. La excelencia como valor, no como postura.</td></tr>
+        <tr><td class="cell-key">ES</td><td>Aspiracional y emocional. La pasión como intensidad, no como exageración.</td></tr>
+        <tr><td class="cell-key">FR</td><td>Sofisticación y cultura. Conecta mejor desde lo artístico y artesanal que desde lo masivo.</td></tr>
+        <tr><td class="cell-key">Nórdicos</td><td>Minimalismo, autenticidad radical, naturaleza extrema. El frío como condición del universo.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Prohibiciones estéticas</div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Pastel, suave, sin aristas. Si no molesta a nadie, está fuera del universo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Corporativo en cualquier dimensión: tono, estética o argumentación.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Commercial EDM o música de fondo genérica.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Imágenes de stock. La calidad visual es un valor del universo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Verde, amarillo u naranja como colores primarios.</span></div>
+    </div>
+  `
+},
+reglas:{
+  label:'Reglas',sublabel:'Dimensión 4',question:'¿Qué es y qué no es posible en el universo Red Bull Europa?',color:'#A855F7',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">Las 4 leyes innegociables</div>
+      <div class="ley"><b>Ley 1 — Autenticidad de la hazaña</b><span>Toda acción que Red Bull apoya, protagoniza o documenta debe ser real y verificable. No hay stunts de marketing. La hazaña es el contenido.</span></div>
+      <div class="ley"><b>Ley 2 — El ser humano primero, la marca después</b><span>El universo celebra el logro humano. La bebida es consecuencia, no causa. La marca nunca toma el protagonismo de la hazaña.</span></div>
+      <div class="ley"><b>Ley 3 — Estándares imposibles como norma</b><span>La excelencia no es aspiracional — es el piso mínimo. La mediocridad, incluso la mediocre-pero-simpática, no tiene lugar en este mundo.</span></div>
+      <div class="ley"><b>Ley 4 — Irreverencia con sustancia</b><span>El universo puede desafiar convenciones e ignorar las reglas del mercado. Siempre desde la sustancia, nunca desde el vacío provocador.</span></div>
+    </div>
+    <div class="section">
+      <div class="section-title">La física cultural del universo</div>
+      <ul class="dim-list">
+        <li>Si Red Bull está presente, lo imposible ocurre. Stratos lo probó. Los 4 títulos con Vettel lo probaron. La era Verstappen lo confirma.</li>
+        <li>Los límites son puntos de partida, no topes. La pregunta siempre es "¿cómo?", nunca "¿para qué?".</li>
+        <li>El atleta es un sistema completo: físico + mental + nutrición + tecnología. El universo celebra esa complejidad.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">Prohibiciones absolutas</div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span><b>Doping messaging, real o implícito.</b> Europa es especialmente sensible. Destruye la credibilidad del universo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span><b>Victimismo.</b> El universo no llora. Puede mostrar caídas — siempre en el camino hacia el levantarse.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span><b>Mediocridad como valor.</b> No existe "lo suficientemente bueno". Los estándares son absolutos.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span><b>Comparaciones directas con competencia.</b> El universo es autosuficiente y no necesita referencias externas.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span><b>Publicidad directa a menores de 14 (regulatorio UE).</b> Ningún mercado europeo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span><b>Alcohol + energía en comunicación.</b> Restricción regulatoria + de universo.</span></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Tabla de guardrails</div>
+      <div class="rule-row"><span class="rule-tag tag-si">SÍ</span><span>Atleta europeo con hazaña documentada y verificable.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-si">SÍ</span><span>Evento de música techno con atletas Red Bull Europa.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-si">SÍ</span><span>Documental de atleta femenina europea de deportes de riesgo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-cuidado">CUIDADO</span><span>Collab con marca de moda europea premium con credibilidad cultural real.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-cuidado">CUIDADO</span><span>Campaña de bienestar mental — solo desde el ángulo del rendimiento y la fortaleza.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-cuidado">CUIDADO</span><span>Reacción a muerte de figura deportiva — solo si la marca tiene relación directa y auténtica.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Chiste sobre escándalo político europeo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Influencer de lifestyle sin vínculo con rendimiento extremo.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>UGC de fans haciendo stunts sin preparación.</span></div>
+    </div>
+  `
+},
+mitologia:{
+  label:'Mitología',sublabel:'Dimensión 5',question:'¿Cuál es el origen del universo Red Bull Europa?',color:'#378ADD',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">El mito fundante</div>
+      <p class="dim-text">En 1982, Dietrich Mateschitz llega a Bangkok con un jet lag paralizante y descubre Krating Daeng — "Toro Rojo" en tailandés. En 3 años de desarrollo y con sus ahorros personales, lanza Red Bull en Austria en 1987.</p>
+      <p class="dim-text">El mundo de las bebidas lo ignora. Los analistas dicen que la categoría no existe. <strong style="color:#e4e4e4">Mateschitz crea la categoría.</strong> Este es el mito fundante: el loco que tenía razón, que creó las reglas de su propio juego porque no aceptó las del juego existente.</p>
+    </div>
+    <div class="section">
+      <div class="section-title">Línea de tiempo sagrada — Europa</div>
+      <div class="timeline-item"><span class="tl-year">1987</span><span class="tl-text">Lanzamiento en Austria. Nace el universo occidental. Nace la categoría de bebidas energéticas en Europa.</span></div>
+      <div class="timeline-item"><span class="tl-year">1989</span><span class="tl-text">Expansión a Alemania, Hungría y Reino Unido. El universo comienza a orbitar más allá del planeta de origen.</span></div>
+      <div class="timeline-item"><span class="tl-year">2004</span><span class="tl-text">Adquisición de Jaguar Racing F1. Red Bull se convierte en constructor. El universo escala a un nivel sin precedentes en deportes europeos.</span></div>
+      <div class="timeline-item"><span class="tl-year">2010–13</span><span class="tl-text">Cuatro títulos consecutivos de F1 con Vettel. La era de mayor densidad mitológica en Europa. Lo imposible se repite cuatro veces.</span></div>
+      <div class="timeline-item"><span class="tl-year">2012</span><span class="tl-text">Stratos: Felix Baumgartner —austriaco, habitante del planeta de origen— salta desde el espacio. 128.000 pies. 8 millones de espectadores en live en YouTube. El hito mitológico cumbre.</span></div>
+      <div class="timeline-item"><span class="tl-year">2019</span><span class="tl-text">Red Bull Gaming Sphere abre en Londres. El universo expande su mitología al territorio europeo del gaming.</span></div>
+      <div class="timeline-item"><span class="tl-year">2022+</span><span class="tl-text">Era Verstappen: dominancia total de F1. El universo se reproduce a sí mismo — un piloto formado en el ecosistema RB lidera la mitología activa.</span></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Los objetos sagrados</div>
+      <div class="sacred"><span class="sacred-icon">🥫</span><div class="sacred-text"><b>La lata de 250ml</b>Plateada, roja, delgada. 12 billones de latas vendidas. Instantáneamente reconocible en cualquier idioma europeo.</div></div>
+      <div class="sacred"><span class="sacred-icon">🏁</span><div class="sacred-text"><b>El Red Bull Ring (Austria)</b>El circuito propio de F1. La única pista del calendario donde el universo es el anfitrión, no el patrocinador.</div></div>
+      <div class="sacred"><span class="sacred-icon">✈️</span><div class="sacred-text"><b>El Hangar-7 (Salzburgo)</b>Aviones de acrobacia, autos históricos de carreras, restaurante Michelin. La catedral del universo europeo.</div></div>
+      <div class="sacred"><span class="sacred-icon">🏎️</span><div class="sacred-text"><b>El casco de Verstappen</b>El objeto sagrado activo de la mitología contemporánea. Cada diseño es un evento cultural propio.</div></div>
+      <div class="sacred"><span class="sacred-icon">🐂</span><div class="sacred-text"><b>Los toros dorados</b>Símbolo heráldico. Dos toros, enfrentados, en tensión activa. La fuerza que se contiene para liberarse.</div></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Visión de futuro</div>
+      <ul class="dim-list">
+        <li>Consolidación como empresa de medios culturales europeos, no solo deportivos. El contenido como producto principal, la bebida como merchandising sagrado.</li>
+        <li>Apertura del universo a atletas femeninas europeas con el mismo nivel de producción e inversión. La expansión mitológica más importante disponible hoy.</li>
+        <li>Liderazgo en la intersección rendimiento físico + tecnológico: biometría, IA aplicada al entrenamiento, esports como disciplina de élite.</li>
+      </ul>
+    </div>
+  `
+},
+escenarios:{
+  label:'Escenarios',sublabel:'Dimensión 6',question:'¿Cuál es el mapa del universo Red Bull Europa?',color:'#1D9E75',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">Sedes centrales europeas</div>
+      <table class="dim-table"><tr><td>Sede</td><td>Rol en el universo</td></tr>
+        <tr><td class="cell-key">Red Bull Ring (Austria)</td><td>Circuito propio de F1. El universo es el anfitrión. Peregrinaje anual del GP de Austria.</td></tr>
+        <tr><td class="cell-key">Hangar-7 (Salzburgo)</td><td>El templo físico del universo. Aviones, autos históricos, restaurante Michelin. La catedral.</td></tr>
+        <tr><td class="cell-key">RB Racing HQ (Milton Keynes)</td><td>El cuartel general de F1. Apertura selectiva a media y fans como parte de la mitología.</td></tr>
+        <tr><td class="cell-key">RB Gaming Sphere (Londres)</td><td>Umbral de entrada al universo para el arquetipo gamer europeo.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Eventos propios como sedes temporales</div>
+      <table class="dim-table"><tr><td>Evento</td><td>Territorio</td></tr>
+        <tr><td class="cell-key">Cliff Diving</td><td>Mostar, Lisboa, Polignano a Mare. Ciudades históricas + hazaña extrema. La belleza y el riesgo.</td></tr>
+        <tr><td class="cell-key">Air Race</td><td>Circuitos europeos. Velocidad + precisión + cielo europeo. El F1 del aire.</td></tr>
+        <tr><td class="cell-key">Ski / Snowboard (Alpes)</td><td>Innsbruck, Kitzbühel, La Rosière. El territorio natural europeo del universo.</td></tr>
+        <tr><td class="cell-key">Music Events (UK, DE, ES)</td><td>Sesiones, festivales. La cultura musical del universo se materializa en Europa.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Embajadas digitales</div>
+      <table class="dim-table"><tr><td>Plataforma</td><td>Rol</td></tr>
+        <tr><td class="cell-key">Red Bull TV</td><td>Sede central digital. Documentales, live streaming de eventos, contenido exclusivo.</td></tr>
+        <tr><td class="cell-key">The Red Bulletin</td><td>La revista del universo. Ediciones en inglés, alemán, español y otros idiomas europeos.</td></tr>
+        <tr><td class="cell-key">YouTube</td><td>Documentales, series, behind-the-scenes. Video long-form.</td></tr>
+        <tr><td class="cell-key">Instagram</td><td>Estética del universo. Carruseles de craftsmanship, reels de hazañas.</td></tr>
+        <tr><td class="cell-key">TikTok</td><td>Embajada de atracción. Clips de alta energía para el Explorador joven.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Topics por mercado europeo</div>
+      <table class="dim-table"><tr><td>Mercado</td><td>Topics prioritarios</td></tr>
+        <tr><td class="cell-key">UK</td><td>F1, esports, drum&bass, extreme sports urbanos.</td></tr>
+        <tr><td class="cell-key">DE</td><td>F1, skiing de precisión, techno berlinés, gaming competitivo.</td></tr>
+        <tr><td class="cell-key">AT</td><td>Origen de la mitología, ski alpino, Hangar-7, Red Bull Ring.</td></tr>
+        <tr><td class="cell-key">ES</td><td>F1 (Alonso/Sainz), motociclismo, surf, trail running.</td></tr>
+        <tr><td class="cell-key">NL</td><td>F1 fervor Verstappen, cycling, gaming.</td></tr>
+        <tr><td class="cell-key">Nórdicos</td><td>Outdoor extremo ártico, ski/kite, ultra-running.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Umbrales de entrada al universo</div>
+      <ul class="dim-list">
+        <li><b>Físico:</b> Asistir al Red Bull Ring o a un evento propio europeo. Experiencia inmersiva completa.</li>
+        <li><b>Comunitario:</b> Unirse al Student Marketeers Program. Rito de iniciación accesible.</li>
+        <li><b>Atlético:</b> Ser seleccionado para el roster. El umbral más exclusivo.</li>
+        <li><b>Digital:</b> Suscribirse a Red Bull TV y consumir documentales de largo aliento.</li>
+      </ul>
+    </div>
+  `
+},
+expansion:{
+  label:'Expansión',sublabel:'Dimensión 7',question:'¿Hacia dónde crece el universo Red Bull Europa?',color:'#22D3EE',status:'defined',
+  body:`
+    <div class="section">
+      <div class="section-title">Planetas activos en Europa</div>
+      <table class="dim-table"><tr><td>Planeta</td><td>Estado · Tensiones</td></tr>
+        <tr><td class="cell-key">Red Bull Records</td><td>Activo. Sello musical en escena europea indie y electrónica. Tensión: debe mantener credibilidad artística independiente.</td></tr>
+        <tr><td class="cell-key">RB Leipzig (Bundesliga)</td><td>Activo. Mayor tensión cultural: ultras del fútbol rechazan el "football de inversor". Audiencia masiva pero tensión de autenticidad.</td></tr>
+        <tr><td class="cell-key">Red Bull Salzburg</td><td>Activo. Más armónico que Leipzig. Cantera de talentos (Mané, Hwang). Rol mitológico: donde se forman los futuros protagonistas.</td></tr>
+        <tr><td class="cell-key">Gaming Sphere (Londres)</td><td>Activo. Umbral más nuevo del universo europeo. En crecimiento.</td></tr>
+        <tr><td class="cell-key">Red Bull Basement</td><td>Activo. Innovación tecnológica para emprendedores. Conecta el universo con la startup culture europea.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">Vectores de crecimiento prioritarios</div>
+      <ul class="dim-list">
+        <li><b>Atletas femeninas europeas — urgente:</b> El roster histórico está dominado por hombres. En Europa, esta es la expansión mitológica más importante disponible. No es concesión política — es territorio inexplorado de hazañas reales. Mismo estándar de producción, misma inversión.</li>
+        <li><b>Gaming / Esports europeo:</b> League of Legends, Rocket League, simuladores de F1 como puente entre mundos. El rendimiento cognitivo bajo presión es parte de la misma física del universo.</li>
+        <li><b>Wellness / Recuperación (en tensión):</b> Solo desde el ángulo del rendimiento del atleta de élite. Nunca desde wellness suave, mindfulness genérico ni tonos pasteles.</li>
+        <li><b>Moda / Lifestyle europeo:</b> Europa es el mercado más fashion-forward del mundo. Collaborations estratégicas que extiendan la mitología — no logos en camisetas.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">Criterio de compatibilidad</div>
+      <div class="rule-row"><span class="rule-tag tag-si">✓</span><span>¿La expansión añade autenticidad al universo? Si no es claramente "sí", no avanzar.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-si">✓</span><span>¿El nuevo territorio tiene protagonistas con hazañas reales? Sin protagonistas auténticos, el universo no puede entrar.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-si">✓</span><span>¿Es coherente con las Sensaciones del universo? Cambiar la estética o el tono genera tensión inmanejable.</span></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Territorios vedados</div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Bebidas alcohólicas — regulatorio europeo severo + diluye el posicionamiento de rendimiento.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Fast food — incompatible con el universo de rendimiento y alimentación de atletas de élite.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Juegos de azar / apuestas — regulatoriamente complejo + culturalmente incompatible.</span></div>
+      <div class="rule-row"><span class="rule-tag tag-no">NO</span><span>Política partidaria — destruye la universalidad del mundo.</span></div>
+    </div>
+  `
+},
+comunidad_design:{
+  label:'Diseño de Comunidad',sublabel:'Dimensión 8 · PARCIAL',question:'¿Cómo se interactúa con el universo Red Bull Europa?',color:'#94A3B8',status:'partial',
+  body:`
+    <div class="section">
+      <div class="section-title">Estado actual — definido y operativo</div>
+      <table class="dim-table"><tr><td>Mecánica</td><td>Estado</td></tr>
+        <tr><td class="cell-key">Roster de Atletas</td><td>Definido, público, actualizado. Jerarquía visible. Entrada: hazaña excepcional + scouting de RB.</td></tr>
+        <tr><td class="cell-key">Student Marketeers</td><td>+50 universidades europeas. Rito de iniciación estructurado. Acceso progresivo al universo.</td></tr>
+        <tr><td class="cell-key">Eventos como rituales</td><td>Red Bull Ring, Cliff Diving, music events. Asistir = ser parte del mundo.</td></tr>
+        <tr><td class="cell-key">Red Bull TV</td><td>Umbral de inmersión digital. Alto engagement, sin interacción formal.</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <div class="section-title">⚠ Problema central</div>
+      <p class="dim-text">El fan europeo de Red Bull — el que sigue F1 religiosamente, asiste al Cliff Diving, escucha los sets de Red Bull Music Academy — <strong style="color:#e4e4e4">no tiene un camino formal para escalar en el universo</strong> más allá de ser espectador pasivo. El universo carece de mecánicas de participación y recompensa para este arquetipo.</p>
+    </div>
+    <div class="section">
+      <div class="section-title">Propuesta de mecánicas (pendiente de definición)</div>
+      <ul class="dim-list">
+        <li><b>Jerarquía de fans:</b> Wing Scout (entrada) → Wing Member (participación activa) → Wing Guardian (rol curatorial). Cada nivel con acceso diferenciado a contenido, eventos y experiencias.</li>
+        <li><b>La moneda del universo europeo:</b> Acceso exclusivo a contenido pre-publicación, tickets con prioridad a eventos propios, acreditaciones de backstage, productos limitados, encuentros con atletas del roster. El valor de ser parte del universo — no descuentos en producto.</li>
+        <li><b>Rituales de comunidad digital:</b> Challenges documentados de rendimiento personal (con criterio del universo), watchparties de F1, live viewing de Cliff Diving con interacción directa con atletas.</li>
+        <li><b>Comunidades por vertical:</b> La tribu de F1, la tribu de música, la tribu de mountain sports. Mecánicas que respetan las diferentes identidades tribales dentro del mismo universo.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">El principio rector</div>
+      <p class="dim-text">El diseño de comunidad no debe crear "fans de marca" — debe crear <strong style="color:#e4e4e4">habitantes del universo</strong>. Un habitante participa en la construcción del mundo, tiene un rol narrativo propio y transmite las reglas a otros. El modelo es una comunidad real: umbrales claros, rituales de pertenencia, jerarquías que se ganan con participación genuina.</p>
+    </div>
+  `
+}
+};
+
+const STATUS_META = {
+  defined:{label:'Definido',bg:'rgba(34,197,94,.12)',color:'#4ade80'},
+  partial:{label:'Parcial',bg:'rgba(234,179,8,.12)',color:'#fbbf24'},
+  missing:{label:'No definido',bg:'rgba(107,114,128,.15)',color:'#9ca3af'}
+};
+
+let current = null;
+
+function selectDim(id) {
+  if(current === id) return;
+  current = id;
+  const d = DIMS[id];
+  if(!d) return;
+
+  // Update connections
+  Object.keys(DIMS).forEach(k => {
+    const conn = document.getElementById('conn-'+k);
+    const node = document.getElementById('nd-'+k);
+    if(!conn || !node) return;
+    const nodeData = DIMS[k];
+    if(k === id) {
+      conn.setAttribute('stroke', nodeData.color);
+      conn.setAttribute('stroke-width','1.8');
+      conn.setAttribute('stroke-opacity','0.8');
+      node.classList.add('active');
+    } else {
+      conn.setAttribute('stroke', 'rgba(255,255,255,0.06)');
+      conn.setAttribute('stroke-width','0.6');
+      conn.setAttribute('stroke-opacity','1');
+      node.classList.remove('active');
+    }
+  });
+  // Handle platform node
+  const platNode = document.getElementById('nd-platform');
+  if(platNode) { id === 'brand_platform' ? platNode.classList.add('active') : platNode.classList.remove('active'); }
+
+  // Update panel
+  const sm = STATUS_META[d.status] || STATUS_META.defined;
+  document.getElementById('ph-dim').textContent = d.sublabel || 'Capa 1';
+  document.getElementById('ph-dim').style.color = d.color;
+  document.getElementById('ph-title').textContent = d.label;
+  document.getElementById('ph-title').style.color = d.color;
+  document.getElementById('ph-question').textContent = d.question || '';
+
+  let statusHTML = '';
+  if(d.status && d.status !== 'defined') {
+    statusHTML = `<span class="ph-status" style="background:${sm.bg};color:${sm.color}">${sm.label}</span>`;
+  }
+  let existing = document.querySelector('.ph-status');
+  if(existing) existing.remove();
+  if(statusHTML) document.getElementById('panel-header').insertAdjacentHTML('beforeend', statusHTML);
+
+  document.getElementById('panel-body').innerHTML = d.body || '';
+  document.getElementById('hint').style.opacity = '0';
+}
+
+// Init: show brand platform
+selectDim('brand_platform');
+</script>
+</body>
+</html>
